@@ -160,7 +160,7 @@ namespace ox {
   class Clock extends Suite<Clock> {
     private _counter: Counter;
     private _hertz: number;
-    private _timer?: NodeJS.Timeout;
+    private _timeout?: NodeJS.Timeout;
     private _unsubscribeFromOnChangeCounter: () => void = () => {};
     constructor(hertz: number = 60, range: Range = { max: Infinity, min: 0 }) {
       super(...Object.values(ClockEvent));
@@ -173,14 +173,14 @@ namespace ox {
         this._counter.events.onChange.subscribe(() =>
           this.events.onChange.publish({ data: this })
         );
-      this._timer = setInterval(
+      this._timeout = setInterval(
         () => this._counter.increment(),
         1000 / this._hertz
       );
       this.events.onStart.publish({ data: this });
     };
     stop = () => {
-      this._timer && clearInterval(this._timer);
+      this._timeout && clearInterval(this._timeout);
       this._unsubscribeFromOnChangeCounter();
       this.events.onStop.publish({ data: this });
     };
