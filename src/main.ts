@@ -98,22 +98,22 @@ namespace ox {
   }
 
   class Roster extends Suite<Player> {
-    players: Player[];
+    private _players: Player[];
     constructor() {
       super(...Object.values(PlayerInputEvent), ...Object.values(RosterEvent));
-      this.players = [];
+      this._players = [];
     }
     add = (...playerIds: string[]) =>
       playerIds.forEach((playerId) => {
         const player = new Player(playerId);
-        this.players.push(player);
+        this._players.push(player);
         this.events.onPlayerAdded.publish({ data: player });
       });
     remove = (...playerIds: string[]) => {
       playerIds.forEach((playerId) => {
         this.events.onPlayerRemoved.publish({
-          data: this.players.splice(
-            this.players.findIndex((player) => player.id === playerId),
+          data: this._players.splice(
+            this._players.findIndex((player) => player.id === playerId),
             1
           )[0],
         });
