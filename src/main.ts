@@ -1,3 +1,5 @@
+import { clearInterval, setInterval, setTimeout } from "timers";
+
 namespace ox {
   class Bus<T> {
     handlers: Handler<T, Data<T>, Event<T, Data<T>>>[];
@@ -31,9 +33,11 @@ namespace ox {
   type Event<T, U extends Data<T>> = { data: U };
 
   export class Game {
+    clock: Clock;
     roster: Roster;
     constructor(config: Config) {
       console.log("config", config);
+      this.clock = new Clock();
       this.roster = new Roster();
     }
   }
@@ -120,10 +124,80 @@ namespace ox {
       });
     };
   }
+  interface Counted {
+    count: number;
+  }
+
+  type Range = { max: number; min: number };
+
+  const clamp = (range: Range, value: number): number =>
+    Math.min(Math.max(value, range.min), range.max);
+
+  class Counter extends Suite<Counter> implements Counted {
+    private _count: number = 0;
+    private _range: Range;
+    get count(): number {
+      return this._count;
+    }
+    private set count(value: number) {
+      this._count = clamp(this._range, value);
+      this.events.onChange.publish({ data: this });
+    }
+    constructor(range: Range) {
+      super(...Object.values(CounterEvent));
+      this._count = range.min;
+      this._range = range;
+    }
+    decrement = () => this.count--;
+    increment = () => this.count++;
+    reset = () => (this.count = this._range.min);
+  }
+
+  enum CounterEvent {
+    OnChange = "onChange",
+  }
+
+  class Clock extends Suite<Clock> {
+    private _counter: Counter;
+    private _hertz: number;
+    private _timer?: NodeJS.Timeout;
+    private _unsubscribeFromOnChangeCounter: () => void = () => {};
+    constructor(hertz: number = 60, range: Range = { max: Infinity, min: 0 }) {
+      super(...Object.values(ClockEvent));
+      this._counter = new Counter(range);
+      this._hertz = hertz;
+    }
+    reset = () => this._counter.reset();
+    start = () => {
+      this._unsubscribeFromOnChangeCounter =
+        this._counter.events.onChange.subscribe(() =>
+          this.events.onChange.publish({ data: this })
+        );
+      this._timer = setInterval(
+        () => this._counter.increment(),
+        1000 / this._hertz
+      );
+      this.events.onStart.publish({ data: this });
+    };
+    stop = () => {
+      this._timer && clearInterval(this._timer);
+      this._unsubscribeFromOnChangeCounter();
+      this.events.onStop.publish({ data: this });
+    };
+  }
+
+  enum ClockEvent {
+    OnStart = "onStart",
+    OnStop = "onStop",
+    OnChange = "onChange",
+  }
 }
 
 export default () => {
   const game = new ox.Game({});
+  game.clock.events.onChange.subscribe((event) => console.log(event));
   game.roster.events.onPlayerAdded.subscribe((event) => console.log(event));
   game.roster.add("ben");
+  game.clock.start();
+  setTimeout(() => game.clock.stop(), 32);
 };
