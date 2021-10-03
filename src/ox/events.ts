@@ -19,9 +19,9 @@ class Bus<T> {
   };
 }
 
-type Data<T> = T & {};
+export type Data<T> = T & {};
 
-type Event<T, U extends Data<T>> = { data: U };
+export type Event<T, U extends Data<T>> = { data: U };
 
 type Handler<T, U extends Data<T>, V extends Event<T, U>> = (event: V) => void;
 
