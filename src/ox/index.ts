@@ -1,6 +1,7 @@
 export * from "./clocks";
 export * from "./changes";
 export * from "./counters";
+export * from "./grid";
 export * from "./events";
 export * from "./game";
 export * from "./identity";
