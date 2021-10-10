@@ -1,5 +1,7 @@
-import { distance } from "./ox";
+import { Grid } from "./ox";
 
 export default () => {
-  console.log(distance({ x: 0, y: 0 }, { x: 1, y: 1 }));
+  const g = new Grid({ x: 5, y: 5 });
+  const x = g.selectBottomEdge();
+  console.log(x);
 };

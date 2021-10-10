@@ -19,12 +19,12 @@ class Cell<T> {
   readonly selectNeighbors: () => Cell<T>[];
   readonly selectRow: () => Cell<T>[];
   constructor(grid: Grid<T>, position: Position) {
-    this.isBottomEdge = position.y === grid.size.y;
+    this.isBottomEdge = position.y === grid.size.y - 1;
     this.isTopEdge = position.y === 0;
     this.isLeftEdge = position.x === 0;
-    this.isRightEdge = position.x === grid.size.x;
-    this.isHorizontalEdge = this.isLeftEdge || this.isRightEdge;
-    this.isVerticalEdge = this.isBottomEdge || this.isTopEdge;
+    this.isRightEdge = position.x === grid.size.x - 1;
+    this.isVerticalEdge = this.isLeftEdge || this.isRightEdge;
+    this.isHorizontalEdge = this.isBottomEdge || this.isTopEdge;
     this.isEdge = this.isHorizontalEdge || this.isVerticalEdge;
     this.position = position;
     this.selectColumn = () => grid.selectColumns(position);
