@@ -1,11 +1,5 @@
 import { Position, Size } from "./math";
 
-// shrink selection
-// filter selection by distance
-// select box
-// select ellipse
-// line-of-sight selection
-
 class Cell<T> {
   readonly isBottomEdge: boolean;
   readonly isEdge: boolean;
