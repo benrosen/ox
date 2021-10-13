@@ -1,14 +1,12 @@
-import { Clock } from "./clocks";
-import { ClockConfig } from ".";
-import { Roster } from "./players";
+import { Clock, ClockConfig } from "./clocks";
+
+import { Roster } from "./agents";
 
 export class Game {
-  clock: Clock;
-  roster: Roster;
-  constructor({ clock: clockConfig }: GameConfig) {
+  readonly clock: Clock;
+  readonly roster: Roster;
+  constructor({ clock: clockConfig }: { clock: ClockConfig }) {
     this.clock = new Clock(clockConfig);
     this.roster = new Roster();
   }
 }
-
-export type GameConfig = { clock: ClockConfig };
