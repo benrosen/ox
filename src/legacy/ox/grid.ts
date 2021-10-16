@@ -1,6 +1,6 @@
 import { Position, Size } from "./math";
 
-class Cell<T> {
+export class Cell {
   readonly isBottomEdge: boolean;
   readonly isEdge: boolean;
   readonly isHorizontalEdge: boolean;
@@ -9,10 +9,10 @@ class Cell<T> {
   readonly isTopEdge: boolean;
   readonly isVerticalEdge: boolean;
   readonly position: Position;
-  readonly selectColumn: () => Cell<T>[];
-  readonly selectNeighbors: () => Cell<T>[];
-  readonly selectRow: () => Cell<T>[];
-  constructor(grid: Grid<T>, position: Position) {
+  readonly selectColumn: () => Cell[];
+  readonly selectNeighbors: () => Cell[];
+  readonly selectRow: () => Cell[];
+  constructor(grid: Grid, position: Position) {
     this.isBottomEdge = position.y === grid.size.y - 1;
     this.isTopEdge = position.y === 0;
     this.isLeftEdge = position.x === 0;
@@ -38,32 +38,35 @@ class Cell<T> {
   }
 }
 
-export class Grid<T> {
-  private readonly _cells: Cell<T>[] = [];
-  readonly growSelection: (...origins: Position[]) => Cell<T>[];
+export class Grid {
+  private readonly _cells: Cell[] = [];
+  readonly growSelection: (...origins: Position[]) => Cell[];
   readonly size: Size;
   readonly select: (
-    onFilter?: (cell: Cell<T>, index: number, origins: Position[]) => boolean,
+    onFilter?: (cell: Cell, index: number, origins: Position[]) => boolean,
     ...origins: Position[]
-  ) => Cell<T>[];
-  readonly selectAll: () => Cell<T>[];
-  readonly selectBottomEdge: () => Cell<T>[];
-  readonly selectColumns: (...origins: Position[]) => Cell<T>[];
-  readonly selectEdges: () => Cell<T>[];
-  readonly selectHorizontalEdges: () => Cell<T>[];
-  readonly selectLeftEdge: () => Cell<T>[];
-  readonly selectRightEdge: () => Cell<T>[];
-  readonly selectRows: (...origins: Position[]) => Cell<T>[];
-  readonly selectTopEdge: () => Cell<T>[];
-  readonly selectVerticalEdges: () => Cell<T>[];
-  constructor(size: Size) {
+  ) => Cell[];
+  readonly selectAll: () => Cell[];
+  readonly selectBottomEdge: () => Cell[];
+  readonly selectColumns: (...origins: Position[]) => Cell[];
+  readonly selectEdges: () => Cell[];
+  readonly selectHorizontalEdges: () => Cell[];
+  readonly selectLeftEdge: () => Cell[];
+  readonly selectRightEdge: () => Cell[];
+  readonly selectRows: (...origins: Position[]) => Cell[];
+  readonly selectTopEdge: () => Cell[];
+  readonly selectVerticalEdges: () => Cell[];
+  constructor(
+    onCreateCell: (grid: Grid, position: Position) => Cell,
+    size: Size
+  ) {
     this.size = size;
     for (let x = 0; x < this.size.x; x++) {
       for (let y = 0; y < this.size.y; y++) {
-        this._cells.push(new Cell<T>(this, { x, y }));
+        this._cells.push(onCreateCell(this, { x, y }));
       }
     }
-    this.growSelection = (...origins: Position[]): Cell<T>[] => [
+    this.growSelection = (...origins: Position[]): Cell[] => [
       ...new Set(
         origins.flatMap((origin) => {
           const cell = this.select(undefined, origin)[0];
@@ -72,9 +75,9 @@ export class Grid<T> {
       ),
     ];
     this.select = (
-      onFilter?: (cell: Cell<T>, index: number, origins: Position[]) => boolean,
+      onFilter?: (cell: Cell, index: number, origins: Position[]) => boolean,
       ...origins: Position[]
-    ): Cell<T>[] =>
+    ): Cell[] =>
       this._cells.filter((cell, index) =>
         onFilter
           ? onFilter(cell, index, origins)
@@ -86,7 +89,7 @@ export class Grid<T> {
     this.selectAll = () => this._cells;
     this.selectBottomEdge = () =>
       this._cells.filter((cell) => cell.isBottomEdge);
-    this.selectColumns = (...origins: Position[]): Cell<T>[] =>
+    this.selectColumns = (...origins: Position[]): Cell[] =>
       this.select(
         (cell, _index, origins) =>
           origins.some((origin) => cell.position.x === origin.x),
@@ -97,7 +100,7 @@ export class Grid<T> {
       this._cells.filter((cell) => cell.isHorizontalEdge);
     this.selectLeftEdge = () => this._cells.filter((cell) => cell.isLeftEdge);
     this.selectRightEdge = () => this._cells.filter((cell) => cell.isRightEdge);
-    this.selectRows = (...origins: Position[]): Cell<T>[] =>
+    this.selectRows = (...origins: Position[]): Cell[] =>
       this.select(
         (cell, _index, origins) =>
           origins.some((origin) => cell.position.y === origin.y),

@@ -11,5 +11,7 @@ export * from "./modes";
 export * from "./math";
 export * from "./modes";
 export * from "./network";
+export * from "./rendering";
+export * from "./scenes";
 
 export { Game as default } from "./game";

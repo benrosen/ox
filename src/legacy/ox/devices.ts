@@ -1,3 +1,4 @@
+import { Position } from ".";
 import { Suite } from "./events";
 
 export class Device extends Suite<Device> {
@@ -90,4 +91,28 @@ type KeyboardConfig = DeviceConfig;
 enum KeyEvent {
   OnKeyDown = "keydown",
   OnKeyUp = "keyup",
+}
+
+// pointer emits events and has a position
+// gridpointer wraps points
+// math functions to clamp position within grid cells, e.g. (41,63)(100,100)(2,2) => (0, 1)
+// gridpointer emits events
+// onPointerEnter, onPointerExit, onPointerDown, onPointerUp
+
+export class Pointer extends DeviceBase<PointerConfig> {
+  private readonly _position: Position;
+  get position(): Position {
+    return this._position;
+  }
+  constructor(config: PointerConfig) {
+    super(config);
+  }
+}
+
+type PointerConfig = DeviceConfig;
+
+enum PointerEvent {
+  OnPointerDown = "pointerdown",
+  OnPointerMove = "pointermove",
+  OnPointerUp = "pointerup",
 }

@@ -5,7 +5,7 @@ import { Client } from "./network";
 import { Mutable } from "./changes";
 import { Suite } from "./events";
 
-class Agent extends Suite<Agent> implements Identifiable {
+export class Agent extends Suite<Agent> implements Identifiable {
   readonly id: Identifier;
   constructor(id?: Identifier) {
     super(...Object.values(AgentEvent));

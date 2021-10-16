@@ -12,7 +12,7 @@ class SceneBase<T extends Scene> extends Scene {
   }
 }
 
-class Level extends SceneBase<Level | PauseMenu | ResultsMenu> {
+export class Level extends SceneBase<Level | PauseMenu | ResultsMenu> {
   constructor(
     onUpdate: (
       onTransition: (nextMode: Level | PauseMenu | ResultsMenu) => void
@@ -28,7 +28,7 @@ class Menu<T extends Scene> extends SceneBase<T> {
   }
 }
 
-class LobbyMenu extends Menu<Level | MainMenu> {
+export class LobbyMenu extends Menu<Level | MainMenu> {
   constructor(
     onUpdate: (onTransition: (nextMode: Level | MainMenu) => void) => void
   ) {
@@ -36,7 +36,7 @@ class LobbyMenu extends Menu<Level | MainMenu> {
   }
 }
 
-class MainMenu extends Menu<LobbyMenu | SettingsMenu> {
+export class MainMenu extends Menu<LobbyMenu | SettingsMenu> {
   constructor(
     onUpdate: (
       onTransition: (nextMode: LobbyMenu | SettingsMenu) => void
