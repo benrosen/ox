@@ -338,11 +338,6 @@ class ProtectedTopic<T> {
   public readonly unsubscribe = (subscriber: (value: T) => void) =>
     this._topic.unsubscribe(subscriber);
 
-  /** The callback functions that are subscribed to this topic. */
-  public get subscribers() {
-    return this._topic.subscribers;
-  }
-
   /**
    * @param topic The public trigger for this protected topic.
    */
@@ -433,7 +428,7 @@ export class PublicTopic<T> {
   /**
    * The callback functions that are subscribed to this topic.
    */
-  public readonly subscribers: ProtectedVariable<Set<(value: T) => void>>;
+  private _subscribers: Set<(value: T) => void>;
 
   /**
    * Unsubscribe from new messages on this topic.
@@ -442,23 +437,17 @@ export class PublicTopic<T> {
   public readonly unsubscribe: (subscriber: (value: T) => void) => void;
 
   constructor() {
-    // refactor this.subscribers to just be a set
-    const onSubscribersChanging = new PublicTopic<Set<(value: T) => void>>();
-    this.subscribers = new ProtectedVariable(onSubscribersChanging);
+    this._subscribers = new Set<(value: T) => void>();
     this.publish = (value: T) =>
-      this.subscribers.value.forEach((subscriber) => subscriber(value));
+      this._subscribers.forEach((subscriber) => subscriber(value));
     this.subscribe = (subscriber: (value: T) => void) =>
-      onSubscribersChanging.publish(
-        new Set([...this.subscribers.value, subscriber])
-      );
+      (this._subscribers = new Set([...this._subscribers, subscriber]));
     this.unsubscribe = (oldSubscriber: (value: T) => void) =>
-      onSubscribersChanging.publish(
-        new Set(
-          Array.from(this.subscribers.value).filter(
-            (subscriber) => subscriber !== oldSubscriber
-          )
+      (this._subscribers = new Set(
+        Array.from(this._subscribers).filter(
+          (subscriber) => subscriber !== oldSubscriber
         )
-      );
+      ));
   }
 }
 
@@ -492,5 +481,5 @@ abstract class Token {
   /**
    * The {@linkcode Cell} on which this token is positioned.
    */
-  public readonly cell: PublicVariable<Cell | undefined> = new PublicVariable();
+  public readonly cell = new PublicVariable<Cell | undefined>();
 }
