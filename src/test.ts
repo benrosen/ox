@@ -5,6 +5,7 @@ import {
   PublicTopic,
   Token,
   getCellFromGridByCoordinates,
+  getDifference,
 } from "./main";
 
 describe("ox", () => {
@@ -237,9 +238,19 @@ describe("ox", () => {
     //   });
     // });
   });
-  //   describe("`getDifference`", () => {
-  //     //
-  //   });
+
+  describe("`getDifference`", () =>
+    (
+      [
+        [[new Set([0, 1, 2]), new Set([0, 1, 2])], new Set([])],
+        [[new Set([0, 1, 2]), new Set([0])], new Set([1, 2])],
+        [[new Set([0, 1]), new Set([0, 1, 2])], new Set([])],
+      ] as [[Set<number>, Set<number>], Set<number>][]
+    ).forEach(([[a, b], expected]) =>
+      it("returns items from the first `Set` that are not included in the second `Set`.", () =>
+        expect(getDifference<number>(a, b)).toStrictEqual(expected))
+    ));
+
   //   describe("`getSlope`", () => {
   //     //
   //   });
