@@ -209,11 +209,27 @@ describe("ox", () => {
     //   });
     // });
 
-    // describe("`.row`", () => {
-    //   it("returns the cells that share an `x` coordinate with this cell, including this cell.", () => {
-    //     //
-    //   });
-    // });
+    describe("`.row`", () =>
+      (
+        [
+          [0, 0],
+          [1, 1],
+          [2, 2],
+        ] as [number, number][]
+      )
+        .map((coordinates) => getCellFromGridByCoordinates(coordinates, grid))
+        .forEach((cell) => {
+          it("returns a collection whose size equals the width of the cell's parent grid.", () =>
+            expect(cell.row.size).toStrictEqual(cell.grid.dimensions[0]));
+          it("returns only cells that share a `y` coordinate with this cell.", () =>
+            expect(
+              Array.from(cell.row).every(
+                (rowCell) => rowCell.coordinates[1] === cell.coordinates[1]
+              )
+            ).toBeTruthy());
+          it("returns a collection that contains this cell.", () =>
+            expect(Array.from(cell.row).includes(cell)).toBeTruthy());
+        }));
 
     // describe("`.tokens`", () => {
     //   it("returns the cells that share an `x` coordinate with this cell, including this cell.", () => {
