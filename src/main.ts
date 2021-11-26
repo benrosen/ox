@@ -133,7 +133,7 @@ export const getCellFromGridByCoordinates = (
  * @param b The second `Set`
  * @returns Items from the first `Set` that are not included in the second `Set`.
  */
-const getDifference = <T>(a: Set<T>, b: Set<T>) =>
+export const getDifference = <T>(a: Set<T>, b: Set<T>) =>
   new Set(Array.from(a).filter((item) => !Array.from(b).includes(item)));
 
 /**
