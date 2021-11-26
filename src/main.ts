@@ -16,7 +16,13 @@
  */
 export class Cell {
   /** Cells that share an `x` coordinate with this cell, including this cell. */
-  public readonly column: Set<Cell>;
+  public get column() {
+    return new Set(
+      Array.from(this.grid.cells).filter(
+        (cell) => cell.coordinates[0] === this.coordinates[0]
+      )
+    );
+  }
 
   /** The `x` and `y` position of this cell within its parent {@linkcode Grid}, with `coordinates[0]` representing the `x` position and `coordinates[1]` representing the `y` position. */
   public readonly coordinates: [number, number];
@@ -55,7 +61,13 @@ export class Cell {
   public readonly positiveDiagonal: Set<Cell>;
 
   /** Cells that share a `y` coordinate with this cell, including this cell. */
-  public readonly row: Set<Cell>;
+  public get row() {
+    return new Set(
+      Array.from(this.grid.cells).filter(
+        (cell) => cell.coordinates[1] === this.coordinates[1]
+      )
+    );
+  }
 
   /** The {@linkcode Token} objects that are currently positioned on this cell.  */
   public readonly tokens: ProtectedVariable<Set<Token>>;
@@ -72,11 +84,6 @@ export class Cell {
   ) {
     this.coordinates = coordinates;
     this.grid = grid;
-    this.column = new Set(
-      Array.from(this.grid.columns).find((column) =>
-        Array.from(column).includes(this)
-      )
-    );
     this.isOnBottomEdge = this.coordinates[1] === this.grid.dimensions[1] - 1;
     this.isOnLeftEdge = this.coordinates[0] === 0;
     this.isOnRightEdge = this.coordinates[0] === this.grid.dimensions[0] - 1;
@@ -108,12 +115,17 @@ export class Cell {
         (cell) => getSlope(this.coordinates, cell.coordinates) === 1
       )
     );
-    this.row = new Set(
-      Array.from(this.grid.rows).find((row) => Array.from(row).includes(this))
-    );
     this.tokens = tokens;
   }
 }
+
+export const getCellFromGridByCoordinates = (
+  coordinates: [number, number],
+  grid: Grid
+) =>
+  Array.from(grid.cells).find(
+    (cell) => cell.coordinates.toString() === coordinates.toString()
+  )!;
 
 /**
  * Get items from the first `Set` that are not included in the second `Set`.
@@ -219,26 +231,6 @@ export class Grid {
     tokenSource: ProtectedVariable<Set<Token>>
   ) {
     this.dimensions = dimensions;
-    this.columns = new Set(
-      [...Array(this.dimensions[1]).keys()].map(
-        (index) =>
-          new Set(
-            Array.from(this.cells).filter(
-              (cell) => cell.coordinates[1] === index
-            )
-          )
-      )
-    );
-    this.rows = new Set(
-      [...Array(this.dimensions[0]).keys()].map(
-        (index) =>
-          new Set(
-            Array.from(this.cells).filter(
-              (cell) => cell.coordinates[0] === index
-            )
-          )
-      )
-    );
     this.tokens = tokenSource;
     for (let x = 0; x < this.dimensions[0]; x++) {
       for (let y = 0; y < this.dimensions[1]; y++) {
@@ -271,6 +263,26 @@ export class Grid {
         });
       }
     }
+    this.columns = new Set(
+      [...Array(this.dimensions[1]).keys()].map(
+        (index) =>
+          new Set(
+            Array.from(this.cells).filter(
+              (cell) => cell.coordinates[1] === index
+            )
+          )
+      )
+    );
+    this.rows = new Set(
+      [...Array(this.dimensions[1]).keys()].map(
+        (index) =>
+          new Set(
+            Array.from(this.cells).filter(
+              (cell) => cell.coordinates[1] === index
+            )
+          )
+      )
+    );
     const onTokensChanging = new PublicTopic<Set<Token>>();
     const addToken = (token: Token) =>
       onTokensChanging.publish(new Set([...this.tokens.value, token]));
@@ -477,7 +489,7 @@ class PublicVariable<T> extends ProtectedVariable<T> {
 /**
  * Tokens may be associated with a {@linkcode Cell}.
  */
-abstract class Token {
+export abstract class Token {
   /**
    * The {@linkcode Cell} on which this token is positioned.
    */
