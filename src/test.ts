@@ -319,9 +319,19 @@ describe("ox", () => {
   //   describe("`Grid`", () => {
   //     //
   //   });
-  //   describe("`isEven`", () => {
-  //     //
-  //   });
+
+  describe("`isEven`", () =>
+    (
+      [
+        [0, true],
+        [1, false],
+        [2, true],
+      ] as [number, boolean][]
+    ).forEach(([number, expected]) =>
+      it(`returns ${expected} for ${number}.`, () =>
+        expect(isEven(number)).toStrictEqual(expected))
+    ));
+
   //   describe("`ProtectedTopic`", () => {
   //     //
   //   });
