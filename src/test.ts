@@ -6,6 +6,8 @@ import {
   Token,
   getCellFromGridByCoordinates,
   getDifference,
+  getSlope,
+  isEven,
 } from "./main";
 
 describe("ox", () => {
@@ -403,15 +405,19 @@ describe("ox", () => {
   //   describe("`ProtectedTopic`", () => {
   //     //
   //   });
+
   //   describe("`ProtectedVariable`", () => {
   //     //
   //   });
+
   //   describe("`PublicTopic`", () => {
   //     //
   //   });
+
   //   describe("`PublicVariable`", () => {
   //     //
   //   });
+
   //   describe("`Token`", () => {
   //     //
   //   });
