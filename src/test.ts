@@ -247,7 +247,9 @@ describe("ox", () => {
         [[new Set([0, 1]), new Set([0, 1, 2])], new Set([])],
       ] as [[Set<number>, Set<number>], Set<number>][]
     ).forEach(([[a, b], expected]) =>
-      it("returns items from the first `Set` that are not included in the second `Set`.", () =>
+      it(`returns [${Array.from(expected)}] from [${Array.from(
+        a
+      )}] and [${Array.from(b)}].`, () =>
         expect(getDifference<number>(a, b)).toStrictEqual(expected))
     ));
 
