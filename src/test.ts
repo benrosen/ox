@@ -251,9 +251,71 @@ describe("ox", () => {
         expect(getDifference<number>(a, b)).toStrictEqual(expected))
     ));
 
-  //   describe("`getSlope`", () => {
-  //     //
-  //   });
+  describe("`getSlope`", () =>
+    (
+      [
+        [
+          [
+            [0, 0],
+            [0, 0],
+          ],
+          NaN,
+        ],
+        [
+          [
+            [0, 0],
+            [0, 1],
+          ],
+          Infinity,
+        ],
+        [
+          [
+            [0, 0],
+            [1, 0],
+          ],
+          0,
+        ],
+        [
+          [
+            [0, 0],
+            [1, 1],
+          ],
+          1,
+        ],
+        [
+          [
+            [0, 0],
+            [-1, 1],
+          ],
+          -1,
+        ],
+        [
+          [
+            [0, 0],
+            [-1, -1],
+          ],
+          1,
+        ],
+        [
+          [
+            [0, 0],
+            [1, -1],
+          ],
+          -1,
+        ],
+        [
+          [
+            [72, 55],
+            [64, 37],
+          ],
+          2.25,
+        ],
+      ] as [[[number, number], [number, number]], number][]
+    ).forEach(([[a, b], expected]) =>
+      it(`returns ${expected} for [${a}] and [${b}].`, () =>
+        expect(getSlope(a, b)).toStrictEqual(expected))
+    ));
+
   //   describe("`Grid`", () => {
   //     //
   //   });
