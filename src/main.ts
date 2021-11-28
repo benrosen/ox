@@ -147,8 +147,8 @@ export const getDifference = <T>(a: Set<T>, b: Set<T>) =>
  * @param b The first point, , with `b[0]` representing the `x` position and `b[1]` representing the `y` position.
  * @returns The slope between the given points.
  */
-const getSlope = (a: [number, number], b: [number, number]) =>
-  b[0] - a[0] / b[1] - a[1];
+export const getSlope = (a: [number, number], b: [number, number]) =>
+  (b[1] - a[1]) / (b[0] - a[0]);
 
 /**
  * A two-dimensional structure of {@linkcode Cell} objects arranged into rows and columns.
