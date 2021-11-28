@@ -52,13 +52,42 @@ export class Cell {
   public readonly isOnVerticalEdge: boolean;
 
   /** Cells that share a descending diagonal line with this cell. */
-  public readonly negativeDiagonal: Set<Cell>;
+  public get negativeDiagonal() {
+    return new Set(
+      Array.from(this.grid.cells).filter(
+        (cell) =>
+          cell === this || getSlope(this.coordinates, cell.coordinates) === -1
+      )
+    );
+  }
 
   /** Cells that share a border with this cell. */
-  public readonly neighbors: Set<Cell>;
+  public get neighbors() {
+    return new Set(
+      Array.from(this.grid.cells).filter((cell) =>
+        [
+          [this.coordinates[0] - 1, this.coordinates[1] - 1],
+          [this.coordinates[0] - 1, this.coordinates[1]],
+          [this.coordinates[0] - 1, this.coordinates[1] + 1],
+          [this.coordinates[0], this.coordinates[1] - 1],
+          [this.coordinates[0], this.coordinates[1] + 1],
+          [this.coordinates[0] + 1, this.coordinates[1] - 1],
+          [this.coordinates[0] + 1, this.coordinates[1]],
+          [this.coordinates[0] + 1, this.coordinates[1] + 1],
+        ].includes(cell.coordinates)
+      )
+    );
+  }
 
   /** Cells that share an ascending diagonal line with this cell. */
-  public readonly positiveDiagonal: Set<Cell>;
+  public get positiveDiagonal() {
+    return new Set(
+      Array.from(this.grid.cells).filter(
+        (cell) =>
+          cell === this || getSlope(this.coordinates, cell.coordinates) === 1
+      )
+    );
+  }
 
   /** Cells that share a `y` coordinate with this cell, including this cell. */
   public get row() {
@@ -91,30 +120,6 @@ export class Cell {
     this.isOnHorizontalEdge = this.isOnTopEdge || this.isOnBottomEdge;
     this.isOnVerticalEdge = this.isOnLeftEdge || this.isOnRightEdge;
     this.isOnEdge = this.isOnHorizontalEdge || this.isOnVerticalEdge;
-    this.negativeDiagonal = new Set(
-      Array.from(this.grid.cells).filter(
-        (cell) => getSlope(this.coordinates, cell.coordinates) === -1
-      )
-    );
-    this.neighbors = new Set(
-      Array.from(this.grid.cells).filter((cell) =>
-        [
-          [this.coordinates[0] - 1, this.coordinates[1] - 1],
-          [this.coordinates[0] - 1, this.coordinates[1]],
-          [this.coordinates[0] - 1, this.coordinates[1] + 1],
-          [this.coordinates[0], this.coordinates[1] - 1],
-          [this.coordinates[0], this.coordinates[1] + 1],
-          [this.coordinates[0] + 1, this.coordinates[1] - 1],
-          [this.coordinates[0] + 1, this.coordinates[1]],
-          [this.coordinates[0] + 1, this.coordinates[1] + 1],
-        ].includes(cell.coordinates)
-      )
-    );
-    this.positiveDiagonal = new Set(
-      Array.from(this.grid.cells).filter(
-        (cell) => getSlope(this.coordinates, cell.coordinates) === 1
-      )
-    );
     this.tokens = tokens;
   }
 }
