@@ -192,11 +192,41 @@ describe("ox", () => {
           })
         ));
 
-    // describe("`.negativeDiagonal`", () => {
-    //   it("returns the cells that share an `x` coordinate with this cell, including this cell.", () => {
-    //     //
-    //   });
-    // });
+    describe("`.negativeDiagonal`", () =>
+      (
+        [
+          [[0, 0], [[0, 0]]],
+          [
+            [1, 1],
+            [
+              [0, 2],
+              [1, 1],
+              [2, 0],
+            ],
+          ],
+          [
+            [0, 2],
+            [
+              [0, 2],
+              [1, 1],
+              [2, 0],
+            ],
+          ],
+        ] as [[number, number], [number, number][]][]
+      )
+        .map(
+          ([coordinates, expectedCoordinates]) =>
+            [
+              getCellFromGridByCoordinates(coordinates, grid),
+              expectedCoordinates,
+            ] as [Cell, [number, number][]]
+        )
+        .forEach(([cell, expected]) =>
+          it(`returns [${expected}] for  [${cell.coordinates}].`, () =>
+            expect(
+              Array.from(cell.negativeDiagonal).map((cell) => cell.coordinates)
+            ).toStrictEqual(expected))
+        ));
 
     // describe("`.neighbors`", () => {
     //   it("returns the cells that share an `x` coordinate with this cell, including this cell.", () => {
@@ -209,6 +239,42 @@ describe("ox", () => {
     //     //
     //   });
     // });
+
+    describe("`.positiveDiagonal`", () =>
+      (
+        [
+          [
+            [0, 0],
+            [
+              [0, 0],
+              [1, 1],
+              [2, 2],
+            ],
+          ],
+          [
+            [1, 1],
+            [
+              [0, 0],
+              [1, 1],
+              [2, 2],
+            ],
+          ],
+          [[0, 2], [[0, 2]]],
+        ] as [[number, number], [number, number][]][]
+      )
+        .map(
+          ([coordinates, expectedCoordinates]) =>
+            [
+              getCellFromGridByCoordinates(coordinates, grid),
+              expectedCoordinates,
+            ] as [Cell, [number, number][]]
+        )
+        .forEach(([cell, expected]) =>
+          it(`returns [${expected}] for  [${cell.coordinates}].`, () =>
+            expect(
+              Array.from(cell.positiveDiagonal).map((cell) => cell.coordinates)
+            ).toStrictEqual(expected))
+        ));
 
     describe("`.row`", () =>
       (
