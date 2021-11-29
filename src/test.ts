@@ -10,6 +10,20 @@ import {
   isEven,
 } from "./main";
 
+const assert = <T, U>(
+  assertions: [T, U][],
+  name: string,
+  onEvaluate: (value: T) => U,
+  onMessage: (assertion: [T, U]) => string = ([input, expected]) =>
+    `Returns ${expected} for ${input}.`
+) =>
+  describe(`\`${name}\``, () =>
+    assertions.forEach((assertion) =>
+      it(onMessage(assertion), () =>
+        expect(onEvaluate(assertion[0])).toStrictEqual(assertion[1])
+      )
+    ));
+
 describe("ox", () => {
   describe("`Cell`", () => {
     const setTokens = new PublicTopic<Set<Token>>();
@@ -236,12 +250,6 @@ describe("ox", () => {
     //   });
     // });
 
-    // describe("`.positiveDiagonal`", () => {
-    //   it("returns the cells that share an `x` coordinate with this cell, including this cell.", () => {
-    //     //
-    //   });
-    // });
-
     describe("`.positiveDiagonal`", () =>
       (
         [
@@ -307,100 +315,100 @@ describe("ox", () => {
     // });
   });
 
-  describe("`getDifference`", () =>
-    (
-      [
-        [[new Set([0, 1, 2]), new Set([0, 1, 2])], new Set([])],
-        [[new Set([0, 1, 2]), new Set([0])], new Set([1, 2])],
-        [[new Set([0, 1]), new Set([0, 1, 2])], new Set([])],
-      ] as [[Set<number>, Set<number>], Set<number>][]
-    ).forEach(([[a, b], expected]) =>
-      it(`returns [${Array.from(expected)}] from [${Array.from(
-        a
-      )}] and [${Array.from(b)}].`, () =>
-        expect(getDifference<number>(a, b)).toStrictEqual(expected))
-    ));
+  // special function that requires Props derivative
+  // generate tests from asser() and Props and assertions
 
-  describe("`getSlope`", () =>
-    (
+  // generic test function takes inputs & expected outputs and evaluates
+
+  // getMessage callback that returns a string
+  //
+
+  // describe("`getCellFromGridByCoordinates`", () => {
+  //   [] as [[[number, number], Grid]][];
+  // });
+
+  assert(
+    [
+      [[new Set([0, 1, 2]), new Set([0, 1, 2])], new Set([])],
+      [[new Set([0, 1, 2]), new Set([0])], new Set([1, 2])],
+      [[new Set([0, 1]), new Set([0, 1, 2])], new Set([])],
+    ] as [[Set<number>, Set<number>], Set<number>][],
+    getDifference.name,
+    ([a, b]) => getDifference<number>(a, b)
+  );
+
+  assert(
+    [
       [
         [
-          [
-            [0, 0],
-            [0, 0],
-          ],
-          NaN,
+          [0, 0],
+          [0, 0],
         ],
-        [
-          [
-            [0, 0],
-            [0, 1],
-          ],
-          Infinity,
-        ],
-        [
-          [
-            [0, 0],
-            [1, 0],
-          ],
-          0,
-        ],
-        [
-          [
-            [0, 0],
-            [1, 1],
-          ],
-          1,
-        ],
-        [
-          [
-            [0, 0],
-            [-1, 1],
-          ],
-          -1,
-        ],
-        [
-          [
-            [0, 0],
-            [-1, -1],
-          ],
-          1,
-        ],
-        [
-          [
-            [0, 0],
-            [1, -1],
-          ],
-          -1,
-        ],
-        [
-          [
-            [72, 55],
-            [64, 37],
-          ],
-          2.25,
-        ],
-      ] as [[[number, number], [number, number]], number][]
-    ).forEach(([[a, b], expected]) =>
-      it(`returns ${expected} for [${a}] and [${b}].`, () =>
-        expect(getSlope(a, b)).toStrictEqual(expected))
-    ));
-
-  //   describe("`Grid`", () => {
-  //     //
-  //   });
-
-  describe("`isEven`", () =>
-    (
+        NaN,
+      ],
       [
-        [0, true],
-        [1, false],
-        [2, true],
-      ] as [number, boolean][]
-    ).forEach(([number, expected]) =>
-      it(`returns ${expected} for ${number}.`, () =>
-        expect(isEven(number)).toStrictEqual(expected))
-    ));
+        [
+          [0, 0],
+          [0, 1],
+        ],
+        Infinity,
+      ],
+      [
+        [
+          [0, 0],
+          [1, 0],
+        ],
+        0,
+      ],
+      [
+        [
+          [0, 0],
+          [1, 1],
+        ],
+        1,
+      ],
+      [
+        [
+          [0, 0],
+          [-1, 1],
+        ],
+        -1,
+      ],
+      [
+        [
+          [0, 0],
+          [-1, -1],
+        ],
+        1,
+      ],
+      [
+        [
+          [0, 0],
+          [1, -1],
+        ],
+        -1,
+      ],
+      [
+        [
+          [72, 55],
+          [64, 37],
+        ],
+        2.25,
+      ],
+    ] as [[[number, number], [number, number]], number][],
+    getSlope.name,
+    ([a, b]) => getSlope(a, b)
+  );
+
+  assert(
+    [
+      [0, true],
+      [1, false],
+      [2, true],
+    ],
+    isEven.name,
+    isEven
+  );
 
   //   describe("`ProtectedTopic`", () => {
   //     //
