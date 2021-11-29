@@ -124,6 +124,13 @@ export class Cell {
   }
 }
 
+// TODO test
+/**
+ * Get the {@linkcode Cell} at the provided coordinates within the provided {@linkcode Grid}.
+ * @param coordinates The `x` and `y` position of the {@linkcode Cell} within its parent {@linkcode Grid}, with `coordinates[0]` representing the `x` position and `coordinates[1]` representing the `y` position.
+ * @param grid The {@linkcode Grid} to which the cell belongs.
+ * @returns The {@linkcode Cell} at the provided coordinates within the provided {@linkcode Grid}.
+ */
 export const getCellFromGridByCoordinates = (
   coordinates: [number, number],
   grid: Grid
