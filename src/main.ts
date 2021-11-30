@@ -124,7 +124,20 @@ export class Cell {
   }
 }
 
-// TODO test
+/**
+ * Throws an error; facilitates throwing errors from within a conditional operator.
+ *
+ * ```typescript
+ * // Example:
+ * const isTrue: boolean = false;
+ * isTrue || crash();
+ * ```
+ * @internal
+ */
+const crash = (): never => {
+  throw new Error();
+};
+
 /**
  * Get the {@linkcode Cell} at the provided coordinates within the provided {@linkcode Grid}.
  * @param coordinates The `x` and `y` position of the {@linkcode Cell} within its parent {@linkcode Grid}, with `coordinates[0]` representing the `x` position and `coordinates[1]` representing the `y` position.
