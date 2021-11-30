@@ -16,7 +16,7 @@
  */
 export class Cell {
   /** Cells that share an `x` coordinate with this cell, including this cell. */
-  public get column() {
+  public get column(): Set<Cell> {
     return new Set(
       Array.from(this.grid.cells).filter(
         (cell) => cell.coordinates[0] === this.coordinates[0]
@@ -52,7 +52,7 @@ export class Cell {
   public readonly isOnVerticalEdge: boolean;
 
   /** Cells that share a descending diagonal line with this cell. */
-  public get negativeDiagonal() {
+  public get negativeDiagonal(): Set<Cell> {
     return new Set(
       Array.from(this.grid.cells).filter(
         (cell) =>
@@ -62,7 +62,7 @@ export class Cell {
   }
 
   /** Cells that share a border with this cell. */
-  public get neighbors() {
+  public get neighbors(): Set<Cell> {
     return new Set(
       Array.from(this.grid.cells).filter((cell) =>
         [
@@ -80,7 +80,7 @@ export class Cell {
   }
 
   /** Cells that share an ascending diagonal line with this cell. */
-  public get positiveDiagonal() {
+  public get positiveDiagonal(): Set<Cell> {
     return new Set(
       Array.from(this.grid.cells).filter(
         (cell) =>
@@ -90,7 +90,7 @@ export class Cell {
   }
 
   /** Cells that share a `y` coordinate with this cell, including this cell. */
-  public get row() {
+  public get row(): Set<Cell> {
     return new Set(
       Array.from(this.grid.cells).filter(
         (cell) => cell.coordinates[1] === this.coordinates[1]
@@ -134,7 +134,7 @@ export class Cell {
 export const getCellFromGridByCoordinates = (
   coordinates: [number, number],
   grid: Grid
-) =>
+): Cell =>
   Array.from(grid.cells).find(
     (cell) => cell.coordinates.toString() === coordinates.toString()
   )!;
@@ -145,7 +145,7 @@ export const getCellFromGridByCoordinates = (
  * @param b The second `Set`
  * @returns Items from the first `Set` that are not included in the second `Set`.
  */
-export const getDifference = <T>(a: Set<T>, b: Set<T>) =>
+export const getDifference = <T>(a: Set<T>, b: Set<T>): Set<T> =>
   new Set(Array.from(a).filter((item) => !Array.from(b).includes(item)));
 
 /**
@@ -154,7 +154,7 @@ export const getDifference = <T>(a: Set<T>, b: Set<T>) =>
  * @param b The first point, , with `b[0]` representing the `x` position and `b[1]` representing the `y` position.
  * @returns The slope between the given points.
  */
-export const getSlope = (a: [number, number], b: [number, number]) =>
+export const getSlope = (a: [number, number], b: [number, number]): number =>
   (b[1] - a[1]) / (b[0] - a[0]);
 
 /**
@@ -404,18 +404,20 @@ export class ProtectedVariable<T> {
   /**
    * Revert the last undo operation.
    */
-  public readonly redo = () =>
-    this._index < this._history.length - 1 &&
-    this._index++ &&
+  public readonly redo = (): void => {
+    this._index < this._history.length - 1;
+    this._index++;
     this._onValueChanging.publish([this._history[this._index - 1], this.value]);
+  };
 
   /**
    * Revert this variable to its previous value.
    */
-  public readonly undo = () =>
-    this._index > 0 &&
-    this._index-- &&
+  public readonly undo = (): void => {
+    this._index > 0;
+    this._index--;
     this._onValueChanging.publish([this.value, this._history[this._index + 1]]);
+  };
 
   /**
    * The current value of this variable.
