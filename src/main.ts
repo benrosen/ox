@@ -150,7 +150,7 @@ export const getCellFromGridByCoordinates = (
 ): Cell =>
   Array.from(grid.cells).find(
     (cell) => cell.coordinates.toString() === coordinates.toString()
-  )!;
+  ) ?? crash();
 
 /**
  * Get items from the first `Set` that are not included in the second `Set`.
