@@ -382,7 +382,7 @@ export class ProtectedVariable<T> {
   /**
    * The index of the currently active value in this variable's history.
    */
-  private _index: number = 0;
+  private _index = 0;
 
   /**
    * Publishes old and new values when this variable's value should be changed.
